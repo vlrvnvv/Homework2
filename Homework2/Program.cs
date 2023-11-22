@@ -7,6 +7,13 @@ namespace Homework2
         static void Main(string[] args)
         {
             Animal animal = CreateAnimal();
+
+            if(animal is null)
+            {
+                Console.WriteLine("Неизвестное животное");
+                return;
+            }
+
             Test(animal);
         }
 
@@ -15,11 +22,9 @@ namespace Homework2
             Console.Write("Введите имя: ");
             string name = Console.ReadLine();
 
-            Console.Write("Введите возраст: ");
-            int age = int.Parse(Console.ReadLine());
+            int age = GetNumberWithRetry("Введите возраст: ");
 
-            Console.Write($"{name} - собака (1) или кошка (2)?: ");
-            int choice = int.Parse(Console.ReadLine());
+            int choice = GetNumberWithRetry($"{name} - собака (1) или кошка (2)?: ");
 
             Animal animal;
             switch (choice)
@@ -34,21 +39,41 @@ namespace Homework2
 
                 default:
                     animal = null;
-                    break; 
+                    break;
             }
 
-            return animal; 
-
+            return animal;
         }
+
+        private static int GetNumberWithRetry(string message)
+        {
+            bool isValidInput = false;
+            while (!isValidInput)
+            {
+                Console.Write(message);
+
+                string value = Console.ReadLine();
+                if (!int.TryParse(value, out int result))
+                {
+                    Console.WriteLine("Повторите ввод!");
+                }
+                else
+                {
+                    return result;
+                }
+            }
+
+            return 0;
+        }
+
         public static void Test(Animal animal)
         {
             while (animal.IsAlive)
             {
-                Console.Write($"Покормить (1) или наказать (2) {animal.Name}?: ");
-                int choice = int.Parse(Console.ReadLine());
+                int choice = GetNumberWithRetry($"Покормить (1) или наказать (2) {animal.Name}?: ");
 
-                Console.Write("Введите количество еды для кормления или интенсивность наказания: ");
-                int count = int.Parse(Console.ReadLine()); 
+                int count = GetNumberWithRetry("Введите количество еды для кормления или интенсивность наказания: ");
+
                 switch (choice)
                 {
                     case 1:
